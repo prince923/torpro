@@ -1,0 +1,9 @@
+{%extends 'base/base.html'%}
+
+{%block title%} Explore{%end%}
+{%block content%}
+This is Explore  <br>
+{% for i in range(1,4)%}
+<img src="/static/image/{{i}}.png"> <br>
+{%end%}
+{%end%}

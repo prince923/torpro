@@ -3,7 +3,7 @@
 {%block title%} Explore{%end%}
 {%block content%}
 This is Explore  <br>
-{% for i in range(1,4)%}
-<img src="/static/image/{{i}}.png"> <br>
+{% for thumbnail_url in thumbnails_url%}
+<img src="{{thumbnail_url}}"> 
 {%end%}
 {%end%}

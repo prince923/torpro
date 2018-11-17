@@ -1,0 +1,12 @@
+{%extends 'base/base.html'%}
+
+{%block title%}
+upload img
+{%end%}
+
+{%block content%}
+<form action="/upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="img">
+    <input type="submit">
+</form>
+{%end%}

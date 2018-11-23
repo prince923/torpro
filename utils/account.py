@@ -1,4 +1,4 @@
-from models.account import User
+from models.account import User,Post
 
 
 
@@ -11,12 +11,6 @@ def hashed (text):
     import hashlib
     return hashlib.md5(text.encode('utf8')).hexdigest()
 
-
-
-DATA = {
-    'username': 'wyf',
-    'password': hashed('qwe123')
-}
 
 
 def authenticate(username, password):
@@ -46,4 +40,31 @@ def register (username,password):
     else:
         return {'msg':'此用户已经存在'}
 
+
+def add_post(username,image_url,thumb_url):
+    """
+    往数据库里加入图片信息
+    :param username:
+    :param image_url:
+    :param thumb_url:
+    :return:
+    """
+    return Post.add_post(username=username,image_url=image_url,thumb_url=thumb_url)
+
+
+def get_post (username):
+    """
+    获取用户对应的图片
+    :param username:
+    :return:
+    """
+    return Post.get_post(username=username)
+
+def id_get_post(post_id):
+    """
+    根据post_id 获取对应的post
+    :param post_id:
+    :return:
+    """
+    return Post.id_get_post(post_id=post_id)
 

@@ -1,8 +1,9 @@
 from .connect import Base
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from datetime import datetime
 from .connect import session
 from sqlalchemy.sql import exists
+from sqlalchemy.orm import relationship
 
 
 class User(Base):
@@ -29,13 +30,52 @@ class User(Base):
 
     @classmethod
     def user_is_exists(cls, username):
-         return session.query(exists().where(User.username == username)).scalar()    # return True or False  存在为True不存在为False
+        return session.query(
+            exists().where(User.username == username)).scalar()  # return True or False  存在为True不存在为False
 
     @classmethod
-    def get_password (cls,username):
+    def get_password(cls, username):
         user = session.query(User).filter_by(username=username).first()
         if user:
             password = user.password
             return password
         else:
             return None
+
+
+class Post(Base):
+    __tablename__ = 'posts'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    image_url = Column(String(100))
+    thumb_url = Column(String(100))
+    user_id = Column(Integer, ForeignKey('user.id'))
+    create_time = Column(DateTime, default=datetime.now)
+
+    user = relationship('User', backref='posts', uselist=True, cascade='all')
+
+    def __repr__(self):
+        return "post id {}".format(self.id)
+
+    @classmethod
+    def add_post(cls, username, image_url, thumb_url):
+        user = session.query(User).filter_by(username=username).first()
+        if user:
+            post = Post(image_url=image_url, thumb_url=thumb_url, user_id=user.id)
+            session.add(post)
+            session.commit()
+        else:
+            return None
+
+    @classmethod
+    def get_post(cls, username):
+        user = session.query(User).filter_by(username=username).first()
+        if user:
+            posts = user.posts
+            return posts
+        else:
+            return None
+
+    @classmethod
+    def id_get_post(cls,post_id):
+        post  = session.query(Post).filter_by(id=post_id).first()
+        return post

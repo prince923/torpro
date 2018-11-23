@@ -3,7 +3,7 @@
 {%block title%} Explore{%end%}
 {%block content%}
 This is Explore  <br>
-{% for thumbnail_url in thumbnails_url%}
-<img src="{{thumbnail_url}}"> 
+{% for post in posts%}
+<img src="{{static_url(post.thumb_url)}}">
 {%end%}
 {%end%}

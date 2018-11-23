@@ -3,7 +3,7 @@
 {%block title%} Index{%end%}
 {%block content%} 
 This is index  {{ datetime.datetime.now()}} <br>
-{%for img_url in img_urls%}
-<img src="{{img_url}}"> <br>
+{%for post in posts%}
+<img src="{{ static_url(post.image_url) }}"> <br>
 {%end%}
 {%end%}

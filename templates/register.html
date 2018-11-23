@@ -1,0 +1,26 @@
+{% extends 'base/base.html' %}
+{% block title %}
+register
+{% end %}
+
+{% block content %}
+{% if msg %}
+<p>{{ msg }}</p>
+<form action="/register" method="post">
+    请输入用户名:<input type="text" name="username" required> <br>
+    请输入密码:<input type="password" name="password" required> <br>
+    请再次输入密码:<input type="password" name="repassword" required> <br>
+    <input type="submit" value="注册"><br>
+    已有账号请 <a href="/login">登录</a>
+</form>
+{% else %}
+<form action="/register" method="post">
+    请输入用户名:<input type="text" name="username" required> <br>
+    请输入密码:<input type="password" name="password" required> <br>
+    请再次输入密码:<input type="password" name="repassword" required> <br>
+    <input type="submit" value="注册"><br>
+    已有账号请 <a href="/login">登录</a>
+</form>
+{% end %}
+
+{% end %}

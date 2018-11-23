@@ -5,6 +5,12 @@
     <title>{%block title %}default Base{%end%}</title>
 </head>
 <body>
+{% if current_user %}
+hello {{ current_user }} <br>
+{% else %}
+您还未登录 <br>
+{% end %}
+
 {%block content %}
 {%end%}
 </body>

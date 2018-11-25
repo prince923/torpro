@@ -1,7 +1,7 @@
 from tornado import web
 from tornado.web import authenticated
 import glob
-from utils import pictule
+from utils.pictule import SaveUploadPhoto
 from pycket.session import SessionMixin
 from utils.account import add_post,get_post,id_get_post
 
@@ -62,9 +62,9 @@ class UploadHandler(BaseHandler):
             img_name = img['filename']
             img_content = img['body']
             print(img_name)
-            image_url = pictule.upload_pic(img_name=img_name, img_content=img_content)
-            thumb_url = pictule.make_thumbnail(img_name, (80, 80))
-            print(self.current_user)
-            add_post(username=self.current_user, image_url=image_url,thumb_url=thumb_url)
+            s = SaveUploadPhoto(img_name=img_name,static_path=self.settings['static_path'])
+            s.upload_pic(img_content=img_content)
+            s.make_thumbnail()
+            add_post(username=self.current_user, image_url=s.get_url,thumb_url=s.get_thumb_url)
         self.write('upload success')
 

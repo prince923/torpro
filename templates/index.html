@@ -1,9 +1,47 @@
-{%extends 'base/base.html'%}
+{% extends 'base/base.html' %}
 
-{%block title%} Index{%end%}
-{%block content%} 
-This is index  {{ datetime.datetime.now()}} <br>
-{%for post in posts%}
-<img src="{{ static_url(post.image_url) }}"> <br>
-{%end%}
-{%end%}
+{% block title %} Index{% end %}
+{% block head %}
+<style>
+    .m20 {
+        margin-top: 20px;
+    }
+</style>
+{% end %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 m20">
+            This is index {{ datetime.datetime.now() }} <br>
+            {% for post in posts %}
+            <a href="post/{{ post.id }}">
+                <img src="{{ static_url(post.image_url) }}" width="900px" height="600px" class="img-fluid"> <br>
+            </a>
+            {% end %}
+        </div>
+        <div class="col-lg-4 m20">
+            <div class="card border-primary m20 " style="max-width: 18rem;">
+                <div class="card border-dark" style="max-width: 18rem;">
+                    <div class="card-header">
+                        {% if current_user %}
+                        当前用户:{{ current_user }} <br>
+                        {% else %}
+                        您还未登录 <br>
+                        {% end %}
+                    </div>
+                    <div class="card-body text-dark">
+                        <h5 class="card-title">Dark card title</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
+                            the card's content.</p>
+                        <button type="button" class="btn btn-light">关注</button>
+                        <i class="fa fa-weixin"></i>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+{% end %}

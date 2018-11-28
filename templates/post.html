@@ -1,7 +1,7 @@
-{%extends 'base/base.html'%}
+{% extends 'base/base.html' %}
 
-{%block title%} Post {%end%}
-{%block content%} 
-This is post {{ post.id }} <br>
+{% block title %} Post {% end %}
+{% block content %}
+This is post {{ post.id }}  by {{ post.user[0].username }} at {{ post.create_time }} upload<br>
 <img src="{{ static_url(post.image_url) }}" alt="">
-{%end%}
+{% end %}

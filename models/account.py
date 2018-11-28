@@ -79,3 +79,8 @@ class Post(Base):
     def id_get_post(cls,post_id):
         post  = session.query(Post).filter_by(id=post_id).first()
         return post
+
+    @classmethod
+    def get_post_all (cls):
+        posts = session.query(Post).order_by(Post.id.desc()).all()
+        return posts

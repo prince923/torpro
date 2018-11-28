@@ -21,20 +21,20 @@ class Application(web.Application):
             debug=True,
             template_path='templates',
             static_path='static',
-            pycket = {
-                     'engine': 'redis',
-                     'storage': {
-                         'host': 'localhost',
-                         'port': 6379,
-                         'db_sessions': 5,  # 会话
-                         'db_notifications': 11,  # 通知
-                         'max_connections': 2 ** 31,  # 最大连接数
-                     },
-                     'cookies': {
-                         'expires_days': 30,
-                     }
-                 },
-            login_url = '/login',
+            pycket={
+                'engine': 'redis',
+                'storage': {
+                    'host': 'localhost',
+                    'port': 6379,
+                    'db_sessions': 5,  # 会话
+                    'db_notifications': 11,  # 通知
+                    'max_connections': 2 ** 31,  # 最大连接数
+                },
+                'cookies': {
+                    'expires_days': 30,
+                }
+            },
+            login_url='/login',
             cookie_secret='asdasdqweqwe',
         )
         super().__init__(handlers, **settings)

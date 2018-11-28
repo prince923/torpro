@@ -4,6 +4,8 @@
 {%block content%}
 This is Explore  <br>
 {% for post in posts%}
-<img src="{{static_url(post.thumb_url)}}">
+<a href="post/{{ post.id }}">
+<img src="{{static_url(post.thumb_url) }} " class="img-thumbnail">
+ </a>
 {%end%}
 {%end%}

@@ -3,7 +3,7 @@ from tornado.web import authenticated
 import glob
 from utils.pictule import SaveUploadPhoto
 from pycket.session import SessionMixin
-from utils.account import add_post,get_post,id_get_post
+from utils.account import add_post,get_post,id_get_post,get_all_post
 
 
 class BaseHandler(web.RequestHandler, SessionMixin):
@@ -31,7 +31,7 @@ class ExploreHandler(BaseHandler):
     """
     @authenticated
     def get(self, *args, **kwargs):
-        posts = get_post(username=self.current_user)
+        posts = get_all_post()
         self.render('explore.html', posts=posts)
 
 

@@ -68,3 +68,11 @@ def id_get_post(post_id):
     """
     return Post.id_get_post(post_id=post_id)
 
+
+def get_all_post():
+    """
+    按降序获取所有的post
+    :return:
+    """
+    return Post.get_post_all()
+

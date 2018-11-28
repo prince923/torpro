@@ -6,7 +6,7 @@ import uuid
 class SaveUploadPhoto(object):
     upload_path = 'image/upload'
     thumb_path = 'image/upload/thumbs'
-    size = (80,80)
+    size = (200,200)
 
     def __init__(self,img_name,static_path):
         self.img_name = img_name
@@ -63,6 +63,6 @@ class SaveUploadPhoto(object):
         :return:
         """
         file, ext = os.path.splitext(self.new_name)
-        thumb_url = self.thumb_path+'{}_{}x{}.png'.format(file, self.size[0],self.size[1])
+        thumb_url = self.thumb_path+'/'+'{}_{}x{}.png'.format(file, self.size[0],self.size[1])
         return thumb_url
 

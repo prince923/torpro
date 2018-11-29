@@ -2,6 +2,11 @@
 
 {% block title %} Post {% end %}
 {% block content %}
-This is post {{ post.id }}  by {{ post.user[0].username }} at {{ post.create_time }} upload<br>
+This is post {{ post.id }}  by {{ post.user[0].username }} at {{ post.create_time }} upload
+{% if count == 0 %}
+<br>
+{% else %}
+<i class="fa fa-heart "  style='color : red;'></i>{{ count }} <br>
+{% end %}
 <img src="{{ static_url(post.image_url) }}" alt="">
 {% end %}

@@ -1,0 +1,61 @@
+{% extends 'base/base.html' %}
+
+{% block title %}
+个人档案
+{% end %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ static_url('css/account.css') }}">
+{% end %}
+
+{% block content %}
+<div class="container">
+
+    <div class="row m20">
+        <div class="m20"><h4>{{username}}的喜欢</h4></div>
+
+        <div class="card-deck m20">
+            {% for like_post in like_posts %}
+                {% for user_li in like_post.user_like  %}
+                     {% if user_li.id != like_post.user_id %}
+                        <div class="card">
+
+                <a href="/post/{{ like_post.id }}"><img class="card-img-top" src="{{ static_url(like_post.thumb_url) }}"
+                                                        alt="Card image cap"></a>
+                <div class="card-body">
+                    <h5 class="card-title">Card title</h5>
+                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                        additional content. This content is a little bit longer.</p>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">Last updated 3 mins ago</small>
+                </div>
+            </div>
+                    {% end %}
+                {% end %}
+            {% end %}
+        </div>
+    </div>
+    <div class="row m20">
+        <div class="m20"><h4>{{ username }}的上传</h4></div>
+
+        <div class="card-deck m20">
+            {% for p in posts %}
+            <div class="card">
+                <a href="/post/{{ p.id }}"><img class="card-img-top" src="{{ static_url(p.thumb_url) }}"
+                                                alt="Card image cap"></a>
+                <div class="card-body">
+                    <h5 class="card-title">Card title</h5>
+                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                        additional content. This content is a little bit longer.</p>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">Last updated 3 mins ago</small>
+                </div>
+            </div>
+            {% end %}
+        </div>
+    </div>
+
+</div>
+{% end %}

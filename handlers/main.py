@@ -3,7 +3,7 @@ from tornado.web import authenticated
 import glob
 from utils.pictule import SaveUploadPhoto
 from pycket.session import SessionMixin
-from utils.account import add_post,get_post,id_get_post,get_all_post
+from utils.account import add_post,get_post,id_get_post,get_all_post,get_like_posts,get_count
 
 
 class BaseHandler(web.RequestHandler, SessionMixin):
@@ -43,13 +43,17 @@ class PostHandler(BaseHandler):
     @authenticated
     def get(self, post_id):
         post = id_get_post(post_id=post_id)
+        count=get_count(post_id=post_id)
         if post:
-            self.render('post.html', post = post)
+            self.render('post.html', post = post,count=count)
         else:
             self.write('post不存在')
 
 
 class UploadHandler(BaseHandler):
+    """
+    用户上传图片得接口
+    """
     @authenticated
     def get(self, *args, **kwargs):
         self.render('upload_img.html')
@@ -68,3 +72,20 @@ class UploadHandler(BaseHandler):
             add_post(username=self.current_user, image_url=s.get_url,thumb_url=s.get_thumb_url)
         self.write('upload success')
 
+
+class ProfileHandler(BaseHandler):
+
+    @authenticated
+    def get(self, *args, **kwargs):
+        username = self.get_argument('username','')
+        if username:
+            posts = get_post(username=username)
+            like_posts = get_like_posts(username=username)
+        else:
+            username=self.current_user
+            posts = get_post(username=username)
+            like_posts = get_like_posts(username=username)
+        self.render('profile.html',posts=posts,like_posts=like_posts,username=username)
+
+    def post(self, *args, **kwargs):
+        pass

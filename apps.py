@@ -16,6 +16,7 @@ class Application(web.Application):
             (r'/login', auth.LoginHandler),
             (r'/logout', auth.LogoutHandler),
             (r'/register', auth.RegisterHandler),
+            (r'/profile',main.ProfileHandler),
         ]
         settings = dict(
             debug=True,

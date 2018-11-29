@@ -1,4 +1,5 @@
 from models.account import User,Post
+from models.connect import session
 
 
 
@@ -75,4 +76,35 @@ def get_all_post():
     :return:
     """
     return Post.get_post_all()
+
+
+def get_user(username):
+    """
+    根据用户名返回用户对象
+    :param username:
+    :return: 如果有返回单个用户对象,否则返回None
+    """
+    return User.get_user(username=username)
+
+
+def get_like_posts(username):
+    """
+    获取用户喜欢的图片
+    :param username:
+    :return:
+    """
+    user = get_user(username=username)
+    return  user. like_posts
+
+
+def get_count(post_id):
+    """
+    获取单个图片被多少人标记为喜欢
+    :param post_id:
+    :return:
+    """
+    post = id_get_post(post_id=post_id)
+    user_like = post.user_like
+    count = len(user_like)
+    return count
 

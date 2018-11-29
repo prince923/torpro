@@ -1,5 +1,5 @@
 from .connect import Base
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey,Table
 from datetime import datetime
 from .connect import session
 from sqlalchemy.sql import exists
@@ -12,6 +12,9 @@ class User(Base):
     username = Column(String(20), nullable=False)
     password = Column(String(50))
     create_time = Column(DateTime, default=datetime.now)
+
+    like_posts = relationship('Post',backref='user_like',secondary='like_posts')
+
 
     def __repr__(self):
         return 'id:{},username:{},password:{},create_time:{}'.format(
@@ -39,6 +42,14 @@ class User(Base):
         if user:
             password = user.password
             return password
+        else:
+            return None
+
+    @classmethod
+    def get_user(cls,username):
+        user = session.query(User).filter_by(username=username).first()
+        if user:
+            return user
         else:
             return None
 
@@ -84,3 +95,9 @@ class Post(Base):
     def get_post_all (cls):
         posts = session.query(Post).order_by(Post.id.desc()).all()
         return posts
+
+# 记录用户喜欢那张图片
+like_posts = Table('like_posts',Base.metadata,
+                   Column('user_id',ForeignKey('user.id'),primary_key=True),
+                   Column('post_id',ForeignKey('posts.id'),primary_key=True)
+                   )

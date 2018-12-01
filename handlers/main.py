@@ -74,6 +74,9 @@ class UploadHandler(BaseHandler):
 
 
 class ProfileHandler(BaseHandler):
+    """
+    展示用户上传和喜欢的图片
+    """
 
     @authenticated
     def get(self, *args, **kwargs):
@@ -89,3 +92,8 @@ class ProfileHandler(BaseHandler):
 
     def post(self, *args, **kwargs):
         pass
+
+
+
+
+

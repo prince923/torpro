@@ -1,7 +1,7 @@
 from tornado import web
 from tornado import ioloop
 from tornado.options import define, options
-from handlers import main, auth
+from handlers import main, auth,chat
 
 define('port', default=8080, help='run port', type=int)
 
@@ -17,6 +17,8 @@ class Application(web.Application):
             (r'/logout', auth.LogoutHandler),
             (r'/register', auth.RegisterHandler),
             (r'/profile',main.ProfileHandler),
+            (r'/room',chat.RoomHandler),
+            (r'/ws',chat.ChatHandler),
         ]
         settings = dict(
             debug=True,

@@ -1,1 +1,5 @@
-<div class="message" id="m{{ message["id"] }}">{{ current_user }}说:{% module linkify(message["body"]) %}</div>
+{% if current_user %}
+<div class="message" id="m{{ message["id"] }}">
+    {{ current_user }}说:{% module linkify(message["body"]) %}
+</div>
+{% end %}

@@ -34,7 +34,7 @@ class User(Base):
     @classmethod
     def user_is_exists(cls, username):
         return session.query(
-            exists().where(User.username == username)).scalar()  # return True or False  存在为True不存在为False
+            exists().where(User.username == username)).scalar()  # return True or False存在为True不存在为False
 
     @classmethod
     def get_password(cls, username):
@@ -74,6 +74,7 @@ class Post(Base):
             post = Post(image_url=image_url, thumb_url=thumb_url, user_id=user.id)
             session.add(post)
             session.commit()
+            return post
         else:
             return None
 

@@ -1,6 +1,5 @@
 from tornado import web
 from tornado.web import authenticated
-import glob
 from utils.pictule import SaveUploadPhoto
 from pycket.session import SessionMixin
 from utils.account import add_post,get_post,id_get_post,get_all_post,get_like_posts,get_count
@@ -69,8 +68,8 @@ class UploadHandler(BaseHandler):
             s = SaveUploadPhoto(img_name=img_name,static_path=self.settings['static_path'])
             s.upload_pic(img_content=img_content)
             s.make_thumbnail()
-            add_post(username=self.current_user, image_url=s.get_url,thumb_url=s.get_thumb_url)
-        self.write('upload success')
+            post = add_post(username=self.current_user, image_url=s.get_url,thumb_url=s.get_thumb_url)
+        self.redirect('/post/{}'.format(post.id))
 
 
 class ProfileHandler(BaseHandler):

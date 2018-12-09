@@ -3,7 +3,7 @@
 {% block title %}room page{% end %}
 
 {% block content %}
-<div id="body">
+<div class="container"><div id="body">
     <div id="inbox">
         {% for message in messages %}
         {% raw message['html'] %}
@@ -21,7 +21,8 @@
             </table>
         </form>
     </div>
-</div>
+</div></div>
+
 
 {% end %}
 

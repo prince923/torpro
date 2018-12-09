@@ -6,9 +6,8 @@ from tornado.web import authenticated
 
 from tornado.httpclient import AsyncHTTPClient
 import tornado.gen
-from utils.pictule import SaveUploadPhoto
-from utils.account import add_post
-
+from tornado.ioloop import IOLoop
+from utils.account import make_chat
 
 
 class RoomHandler(BaseHandler):
@@ -17,13 +16,10 @@ class RoomHandler(BaseHandler):
         self.render('room.html', messages=ChatHandler.history)
 
 
-
-
 class ChatHandler(tornado.websocket.WebSocketHandler, BaseHandler):
     user_set = set()  # 存放用户的集合
     history = []  # 存放历史消息的消息列表
     count = 5  # 显示历史消息的条数
-
 
     def open(self, *args, **kwargs):
         """
@@ -32,7 +28,6 @@ class ChatHandler(tornado.websocket.WebSocketHandler, BaseHandler):
         ChatHandler.user_set.add(self)
         print('%s已连接' % self.current_user)
 
-    @tornado.gen.coroutine
     def on_message(self, message):
         """
         处理消息，当客户端有消息发送过来的时候调用
@@ -43,23 +38,29 @@ class ChatHandler(tornado.websocket.WebSocketHandler, BaseHandler):
         body = tornado.escape.json_decode(message)['body']  # json_decode 将返回的json字符串变成dict
         if body.startswith('http://'):
                 http_client = AsyncHTTPClient()
-                save_api = 'http://192.168.48.134:8080/async?save_url={}&form=room&user={}'.format(body,self.current_user)
-                response = yield http_client.fetch(save_api)
-                body = 'http://192.168.48.134:8080/post/{}'.format(response.body.decode('utf-8'))
+                save_api = 'http://192.168.48.134:8080/async?save_url={}&form=room&user={}'.format(body, self.current_user)
+                IOLoop.current().spawn_callback(http_client.fetch, save_api)
+                body = 'url 正在处理中，请等待...'
+                chat = make_chat(msg_body=body,name='系统')
+                msg = {
+                    'html': tornado.escape.to_basestring(
+                        self.render_string('message.html', message=chat)
+                    ),
+                    'id': chat['id']
+                }
+                self.write_message(msg)
 
-        chat = {
-            'id': str(uuid.uuid4()),
-            'body': body
-        }
-        msg = {
-            'html': tornado.escape.to_basestring(
-                self.render_string('message.html', message=chat)
-            ),
-            'id': chat['id']
-        }
-        # print(msg)   # {'html': '<div class="message" id="mef1947ac-7f68-4381-b6c9-93b484c4ee85">ppp</div>', 'id': 'ef1947ac-7f68-4381-b6c9-93b484c4ee85'}
-        ChatHandler.history_message(msg)
-        ChatHandler.send_message(msg)
+        else:
+                chat = make_chat(msg_body=body,name=self.current_user)
+                msg = {
+                    'html': tornado.escape.to_basestring(
+                        self.render_string('message.html', message=chat)
+                    ),
+                    'id': chat['id']
+                }
+                # print(msg)   # {'html': '<div class="message" id="mef1947ac-7f68-4381-b6c9-93b484c4ee85">ppp</div>', 'id': 'ef1947ac-7f68-4381-b6c9-93b484c4ee85'}
+                ChatHandler.history_message(msg)
+                ChatHandler.send_message(msg)
 
 
     def on_close(self):
@@ -71,6 +72,7 @@ class ChatHandler(tornado.websocket.WebSocketHandler, BaseHandler):
             ChatHandler.user_set.remove(self)
         print('连接关闭')
 
+
     @classmethod
     def send_message(cls, msg):
         """
@@ -80,6 +82,7 @@ class ChatHandler(tornado.websocket.WebSocketHandler, BaseHandler):
         """
         for u in ChatHandler.user_set:
             u.write_message(msg)
+
 
     @classmethod
     def history_message(cls, msg):

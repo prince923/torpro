@@ -1,5 +1,6 @@
 from models.account import User,Post
 from models.connect import session
+import uuid
 
 
 
@@ -107,4 +108,23 @@ def get_count(post_id):
     user_like = post.user_like
     count = len(user_like)
     return count
+
+
+def make_chat(msg_body,name,image_url = None,post_id = None):
+    """
+    用于 websocket 构造消息
+    :param msg_body:  接受到的消息
+    :param name:  名字
+    :param image_url : 图片地址默认为None
+    :param post_id: 图片id
+    :return:  chat     type:dict
+    """
+    chat = {
+        'id': str(uuid.uuid4()),
+        'body': msg_body,
+        'user': name,
+        'image_url':image_url,
+        'post_id':post_id
+    }
+    return chat
 

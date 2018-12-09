@@ -1,5 +1,7 @@
-{% if current_user %}
 <div class="message" id="m{{ message["id"] }}">
-    {{ current_user }}说:{% module linkify(message["body"]) %}
+    {{ message["user"] }} : {% module linkify(message["body"]) %}   <br>
+    {% if message["image_url"] %}
+    <a href="post/{{ message['post_id'] }}"><img src="{{ static_url(message["image_url"]) }}" alt=""></a>
+    {% end %}
 </div>
-{% end %}
+

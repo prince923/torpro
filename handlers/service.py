@@ -2,7 +2,7 @@ from .main import BaseHandler
 import requests
 from utils.pictule import SaveUploadPhoto
 from tornado.web import authenticated
-from utils.account import add_post,make_chat
+from utils.account import make_chat
 from tornado.httpclient import AsyncHTTPClient
 import tornado.gen
 from .chat import ChatHandler
@@ -18,7 +18,7 @@ class SyncHandler(BaseHandler):
         s = SaveUploadPhoto(img_name='x.jpg', static_path=self.settings['static_path'])
         s.upload_pic(img_content=img_content)
         s.make_thumbnail()
-        post = add_post(username=self.current_user, image_url=s.get_url, thumb_url=s.get_thumb_url)
+        post = self.orm.add_post(image_url=s.get_url, thumb_url=s.get_thumb_url)
         self.redirect('/post/{}'.format(post.id))
 
 
@@ -35,7 +35,7 @@ class AsyncHandler(BaseHandler):
             s = SaveUploadPhoto(img_name='x.jpg', static_path=self.settings['static_path'])
             s.upload_pic(img_content=img_content)
             s.make_thumbnail()
-            post = add_post(username=user, image_url=s.get_url, thumb_url=s.get_thumb_url)
+            post = self.orm.add_post( image_url=s.get_url, thumb_url=s.get_thumb_url)
             chat = make_chat(msg_body='{} 上传成功一张图片,图片地址为 : 192.168.47.134:8080/post/{}'.format(user,post.id),name='系统',
                              image_url=post.thumb_url,post_id=post.id)
             msg = {

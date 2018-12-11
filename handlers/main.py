@@ -2,7 +2,8 @@ from tornado import web
 from tornado.web import authenticated
 from utils.pictule import SaveUploadPhoto
 from pycket.session import SessionMixin
-from utils.account import add_post,get_post,id_get_post,get_all_post,get_like_posts,get_count
+from utils.account import HandlerOrm
+from models.connect import Session
 
 
 class BaseHandler(web.RequestHandler, SessionMixin):
@@ -13,6 +14,15 @@ class BaseHandler(web.RequestHandler, SessionMixin):
         else:
             return None
 
+    def prepare(self):
+        self.db_session = Session()
+        self.orm = HandlerOrm(self.db_session,self.current_user)
+
+    def on_finish(self):
+        self.db_session.close()
+
+
+
 
 class IndexHandler(BaseHandler):
     """
@@ -20,7 +30,7 @@ class IndexHandler(BaseHandler):
     """
     @authenticated
     def get(self, *args, **kwargs):
-        posts = get_post(username=self.current_user)
+        posts = self.orm.get_post()
         self.render('index.html', posts=posts)
 
 
@@ -30,7 +40,7 @@ class ExploreHandler(BaseHandler):
     """
     @authenticated
     def get(self, *args, **kwargs):
-        posts = get_all_post()
+        posts = self.orm.get_all_post()
         self.render('explore.html', posts=posts)
 
 
@@ -41,8 +51,8 @@ class PostHandler(BaseHandler):
 
     @authenticated
     def get(self, post_id):
-        post = id_get_post(post_id=post_id)
-        count=get_count(post_id=post_id)
+        post = self.orm.id_get_post(post_id=post_id)
+        count=self.orm.get_count(post_id=post_id)
         if post:
             self.render('post.html', post = post,count=count)
         else:
@@ -68,7 +78,7 @@ class UploadHandler(BaseHandler):
             s = SaveUploadPhoto(img_name=img_name,static_path=self.settings['static_path'])
             s.upload_pic(img_content=img_content)
             s.make_thumbnail()
-            post = add_post(username=self.current_user, image_url=s.get_url,thumb_url=s.get_thumb_url)
+            post = self.orm.add_post(image_url=s.get_url,thumb_url=s.get_thumb_url)
         self.redirect('/post/{}'.format(post.id))
 
 
@@ -81,16 +91,15 @@ class ProfileHandler(BaseHandler):
     def get(self, *args, **kwargs):
         username = self.get_argument('username','')
         if username:
-            posts = get_post(username=username)
-            like_posts = get_like_posts(username=username)
+            self.orm.username = username   # 临时修改username 属性为获取到的username
+            posts =self.orm.get_post()
+            like_posts = self.orm.get_like_posts()
         else:
-            username=self.current_user
-            posts = get_post(username=username)
-            like_posts = get_like_posts(username=username)
+            posts =self.orm.get_post()
+            like_posts =self.orm. get_like_posts()
         self.render('profile.html',posts=posts,like_posts=like_posts,username=username)
 
-    def post(self, *args, **kwargs):
-        pass
+
 
 
 

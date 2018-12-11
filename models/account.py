@@ -46,7 +46,7 @@ class User(Base):
             return None
 
     @classmethod
-    def get_user(cls,username):
+    def get_user(cls,username,session):
         user = session.query(User).filter_by(username=username).first()
         if user:
             return user
@@ -68,7 +68,7 @@ class Post(Base):
         return "post id {}".format(self.id)
 
     @classmethod
-    def add_post(cls, username, image_url, thumb_url):
+    def add_post(cls, username, image_url, thumb_url,session):
         user = session.query(User).filter_by(username=username).first()
         if user:
             post = Post(image_url=image_url, thumb_url=thumb_url, user_id=user.id)
@@ -79,7 +79,7 @@ class Post(Base):
             return None
 
     @classmethod
-    def get_post(cls, username):
+    def get_post(cls, username,session):
         user = session.query(User).filter_by(username=username).first()
         if user:
             posts = user.posts
@@ -88,12 +88,12 @@ class Post(Base):
             return None
 
     @classmethod
-    def id_get_post(cls,post_id):
+    def id_get_post(cls,post_id,session):
         post  = session.query(Post).filter_by(id=post_id).first()
         return post
 
     @classmethod
-    def get_post_all (cls):
+    def get_post_all (cls,session):
         posts = session.query(Post).order_by(Post.id.desc()).all()
         return posts
 

@@ -43,71 +43,7 @@ def register (username,password):
         return {'msg':'此用户已经存在'}
 
 
-def add_post(username,image_url,thumb_url):
-    """
-    往数据库里加入图片信息
-    :param username:
-    :param image_url:
-    :param thumb_url:
-    :return:
-    """
-    return Post.add_post(username=username,image_url=image_url,thumb_url=thumb_url)
 
-
-def get_post (username):
-    """
-    获取用户对应的图片
-    :param username:
-    :return:
-    """
-    return Post.get_post(username=username)
-
-def id_get_post(post_id):
-    """
-    根据post_id 获取对应的post
-    :param post_id:
-    :return:
-    """
-    return Post.id_get_post(post_id=post_id)
-
-
-def get_all_post():
-    """
-    按降序获取所有的post
-    :return:
-    """
-    return Post.get_post_all()
-
-
-def get_user(username):
-    """
-    根据用户名返回用户对象
-    :param username:
-    :return: 如果有返回单个用户对象,否则返回None
-    """
-    return User.get_user(username=username)
-
-
-def get_like_posts(username):
-    """
-    获取用户喜欢的图片
-    :param username:
-    :return:
-    """
-    user = get_user(username=username)
-    return  user. like_posts
-
-
-def get_count(post_id):
-    """
-    获取单个图片被多少人标记为喜欢
-    :param post_id:
-    :return:
-    """
-    post = id_get_post(post_id=post_id)
-    user_like = post.user_like
-    count = len(user_like)
-    return count
 
 
 def make_chat(msg_body,name,image_url = None,post_id = None):
@@ -128,3 +64,77 @@ def make_chat(msg_body,name,image_url = None,post_id = None):
     }
     return chat
 
+
+class HandlerOrm(object):
+    """
+    db_session : Session 实例化的对象
+    username :   获取到的用户姓名
+    """
+    def __init__(self,db_session,username):
+        self.db = db_session
+        self.username = username
+
+
+    def get_post(self):
+        """
+        获取用户对应的图片
+
+        :return:
+        """
+        return Post.get_post(username=self.username,session=self.db)
+
+
+    def add_post(self, image_url, thumb_url):
+        """
+        往数据库里加入图片信息
+        :param image_url:
+        :param thumb_url:
+        :return: post 实例对象
+        """
+        return Post.add_post(username=self.username, image_url=image_url, thumb_url=thumb_url,session=self.db)
+
+
+    def id_get_post(self,post_id):
+        """
+        根据post_id 获取对应的post
+        :param post_id:
+        :return:
+        """
+        return Post.id_get_post(post_id=post_id,session=self.db)
+
+
+    def get_all_post(self):
+        """
+        按降序获取所有的post
+        :return:
+        """
+        return Post.get_post_all(session=self.db)
+
+
+    def get_user(self):
+        """
+        根据用户名返回用户对象
+        :return: 如果有返回单个用户对象,否则返回None
+        """
+        return User.get_user(username=self.username,session=self.db)
+
+
+    def get_like_posts(self):
+        """
+        获取用户喜欢的图片
+        :return:
+        """
+        user = self.get_user()
+        return user.like_posts
+
+
+    def get_count(self,post_id):
+        """
+        获取单个图片被多少人标记为喜欢
+        :param post_id:
+        :return:
+        """
+        post = self.id_get_post(post_id=post_id)
+        user_like = post.user_like
+        count = len(user_like)
+        return count

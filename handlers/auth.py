@@ -1,7 +1,7 @@
-from utils.account import authenticate,register
+from utils.account import HandlerOrm
 from handlers.main import BaseHandler
-from models.account import User
-from utils import res
+
+
 
 
 class LoginHandler(BaseHandler):
@@ -19,7 +19,8 @@ class LoginHandler(BaseHandler):
         password = self.get_argument('password', None)
         next = self.get_argument('next', '/')
         print(username, password)
-        if authenticate(username=username, password=password):
+        self.orm.username = username
+        if self.orm.authenticate(password=password):
             self.session.set('user_info', username)
             self.redirect(next)
         else:
@@ -43,13 +44,14 @@ class RegisterHandler(BaseHandler):
         print(username,password,repassword)
         if username and password and repassword:
             if password == repassword:
-              ret = register(username=username,password=password)
-              if ret['msg'] == 'ok':
-                 self.session.set('user_info',username)
-                 self.redirect('/')
-              else:
-                  msg = ''
-                  msg = ret['msg']
+                self.orm.username = username
+                ret = self.orm.register(password=password)
+                if ret['msg'] == 'ok':
+                    self.session.set('user_info',username)
+                    self.redirect('/')
+                else:
+                     msg = ''
+                     msg = ret['msg']
             else:
                 msg='两次密码输入不一致'
         else:

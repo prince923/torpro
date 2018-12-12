@@ -35,6 +35,7 @@ class AsyncHandler(BaseHandler):
             s = SaveUploadPhoto(img_name='x.jpg', static_path=self.settings['static_path'])
             s.upload_pic(img_content=img_content)
             s.make_thumbnail()
+            self.orm.username = user
             post = self.orm.add_post( image_url=s.get_url, thumb_url=s.get_thumb_url)
             chat = make_chat(msg_body='{} 上传成功一张图片,图片地址为 : 192.168.47.134:8080/post/{}'.format(user,post.id),name='系统',
                              image_url=post.thumb_url,post_id=post.id)

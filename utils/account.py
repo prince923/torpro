@@ -1,5 +1,4 @@
 from models.account import User,Post
-from models.connect import session
 import uuid
 
 
@@ -12,35 +11,6 @@ def hashed (text):
     """
     import hashlib
     return hashlib.md5(text.encode('utf8')).hexdigest()
-
-
-
-def authenticate(username, password):
-    """
-    用户名和密码验证
-    :param username: 用户名
-    :param password:  密码
-    :return: True 或者 False  True代表验证通过，False代表验证没过
-    """
-    hash_password = hashed(password)
-    if hash_password == User.get_password(username=username):
-        return True
-    else:
-        return False
-
-
-def register (username,password):
-    """
-    用户注册
-    :param username:
-    :param password:
-    :return:
-    """
-    if not User.user_is_exists(username=username):
-        User.add_user(username=username, password=hashed(password))
-        return {'msg':'ok'}
-    else:
-        return {'msg':'此用户已经存在'}
 
 
 
@@ -138,3 +108,30 @@ class HandlerOrm(object):
         user_like = post.user_like
         count = len(user_like)
         return count
+
+    def authenticate(self,password):
+        """
+        用户名和密码验证
+        :param password:  密码
+        :return: True 或者 False  True代表验证通过，False代表验证没过
+        """
+        hash_password = hashed(password)
+        if hash_password == User.get_password(username=self.username,session=self.db):
+            return True
+        else:
+            return False
+
+
+    def register(self, password):
+        """
+        用户注册
+        :param password:
+        :return:
+        """
+        if not User.user_is_exists(username=self.username,session=self.db):
+            User.add_user(username=self.username, password=hashed(password),session=self.db)
+            return {'msg': 'ok'}
+        else:
+            return {'msg': '此用户已经存在'}
+
+

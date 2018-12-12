@@ -61,7 +61,7 @@ class PostHandler(BaseHandler):
 
 class UploadHandler(BaseHandler):
     """
-    用户上传图片得接口
+    用户上传图片的接口
     """
     @authenticated
     def get(self, *args, **kwargs):
